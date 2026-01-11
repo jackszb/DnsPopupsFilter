@@ -1,5 +1,6 @@
 import requests
 import re
+import json
 
 # GitHub 上的文件 URL
 url = 'https://raw.githubusercontent.com/AdguardTeam/HostlistsRegistry/main/filters/general/filter_59_DnsPopupsFilter/filter.txt'
@@ -23,12 +24,29 @@ if response.status_code == 200:
 
     # 检查是否提取到任何域名
     if domains:
-        # 保存到文件
+        # 保存域名列表到 domain_list.txt
         with open('domain_list.txt', 'w') as f:
             for domain in sorted(domains):
                 f.write(domain + '\n')
 
         print(f"域名提取完成，保存在 domain_list.txt 文件中。")
+
+        # 生成符合 sing-box 格式的 domain_list.json
+        domain_list = {
+            "version": 3,
+            "rules": [
+                {
+                    "domain_suffix": sorted(list(domains))
+                }
+            ]
+        }
+
+        # 保存为 domain_list.json 文件
+        with open('domain_list.json', 'w') as json_file:
+            json.dump(domain_list, json_file, indent=2)
+
+        print(f"Sing-box 格式的文件已生成，保存在 domain_list.json 文件中。")
+
     else:
         print("未提取到任何域名。")
 else:
