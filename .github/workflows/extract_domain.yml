@@ -27,16 +27,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      # 运行 Python 脚本
-      - name: Extract domains
+      # 运行 Python 脚本，提取域名并生成 domain_list.txt 和 domain_list.json
+      - name: Extract domains and generate JSON
         run: |
           python extract_domains.py
 
       # 提交更新的域名列表
-      - name: Commit and push domain list
+      - name: Commit and push domain list files
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add domain_list.txt
-          git commit -m "Update domain list"
+          git add domain_list.txt domain_list.json
+          git commit -m "Update domain list and JSON"
           git push
